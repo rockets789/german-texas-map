@@ -18,7 +18,7 @@ st.markdown("""
         background-color: #f5f5f5;
     }
     div.stMetric {
-        background-color: #ffffff;
+        background-color: #808080;
         border: 1px solid #e6e6e6;
         padding: 10px;
         border-radius: 5px;
@@ -36,9 +36,7 @@ st.markdown("""
 # 4. LOAD DATA
 @st.cache_data
 def load_data():
-    # Make sure this matches your CSV filename exactly
     df = pd.read_csv("german_sites_cleaned.csv")
-    # Clean up Year data for metrics (convert to numeric, handle errors)
     # We assume there is a 'year' or similar column. If not, we skip date metrics.
     return df
 
