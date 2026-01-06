@@ -30,7 +30,7 @@ st.markdown("""
 st.title("🇩🇪 The German Belt Navigator")
 st.markdown("""
     Between 1830 and 1900, thousands of German immigrants settled in Central Texas. 
-    This interactive map uses historical data to visualize their legacy—from dance halls to cemeteries.
+    This interactive map uses historical data to visualize their legacy in the form of historical markers that can be found throughout the state. You can filter specific historical markers using the tab on the left.  
 """)
 
 # 4. LOAD DATA
