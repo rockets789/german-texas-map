@@ -121,4 +121,4 @@ with st.spinner('Filtering data and redrawing map...'):
         ).add_to(marker_cluster)
 
     # Display Map
-    st_folium(m, width=None, height=600, returnedobjects=[])
+    st_folium(m, width=None, height=600, returned_objects=[])
