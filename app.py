@@ -69,6 +69,10 @@ with st.sidebar:
     
     year_range = st.sidebar.slider("Year Established", min_year, max_year, (1850, 1900))
 
+# MANUAL REFRESH BUTTON
+if st.sidebar.button("🔄 Reload Map"):
+    st.rerun()
+
 # 6. FILTERING LOGIC
 filtered_df = df.copy()
 
