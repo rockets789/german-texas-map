@@ -19,7 +19,7 @@ st.markdown("""
     }
     [data-testid="stSidebar"] {
         min-width: 400px;
-        max-width: 600px;
+        max-width: 500px;
         }
     div.stMetric {
         background-color: #808080;
