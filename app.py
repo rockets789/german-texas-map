@@ -4,14 +4,14 @@ import folium
 from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium
 
-# 1. PAGE CONFIGURATION (Browser Tab Title & Icon)
+# 1. PAGE CONFIGURATION 
 st.set_page_config(
     page_title="German Texas Heritage",
     page_icon="🇩🇪",
     layout="wide"
 )
 
-# 2. CUSTOM CSS (To make it look polished)
+# 2. CUSTOM CSS 
 st.markdown("""
     <style>
     .main {
@@ -38,8 +38,6 @@ st.markdown("""Note: Data is accurate as of Jan. 2026 """)
 @st.cache_data
 def load_data():
     df = pd.read_csv("german_sites_cleaned.csv")
-    # We assume there is a 'year' or similar column. If not, we skip date metrics.
-    # Force the Year column to be numbers (turns "1850?" into NaN)
     df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
     return df
 
@@ -51,7 +49,7 @@ except:
 
 # 5. SIDEBAR FILTERS
 with st.sidebar:
-    st.header("🔍 Explore the History")
+    st.header.sidebar("🔍 Explore the History")
 
 
 # 1. The Refresh Button
@@ -59,7 +57,6 @@ if st.sidebar.button("🔄 Force Reload"):
     st.rerun()
 
 # 2. The Slider Definition
-# We MUST create 'year_range' here so the code below can use it!
 min_year = 1800
 max_year = 2024
 year_range = st.sidebar.slider("Year Established", min_year, max_year, (1840, 1900))
