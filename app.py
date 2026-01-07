@@ -89,7 +89,7 @@ def load_data():
     df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
     df = df.dropna(subset=['latitude', 'longitude']) # Drop rows that still have no location
 
-         return df
+    return df
 try:
     df = load_data()
 except:
