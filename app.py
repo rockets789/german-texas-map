@@ -49,7 +49,7 @@ except:
 
 # 5. SIDEBAR FILTERS
 with st.sidebar:
-    st.header("🔍 Explore the History")
+    st.sidebar.header("🔍 Explore the History")
 
 
 # 1. The Refresh Button
