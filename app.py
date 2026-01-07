@@ -67,6 +67,7 @@ def load_data():
         df['Title'].str.contains(pattern, case=False, na=False) | 
         df['MarkerText'].str.contains(pattern, case=False, na=False)
     ]
+        return df
 
     # 5. FIX COORDINATES (UTM -> Latitude/Longitude)
     def get_lat_lon(row):
