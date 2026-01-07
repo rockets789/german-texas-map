@@ -7,7 +7,7 @@ from streamlit_folium import st_folium
 # 1. PAGE CONFIGURATION 
 st.set_page_config(
     page_title="German Texas Heritage",
-    page_icon="🇩🇪",
+    page_icon="🇩🇪TX",
     layout="wide"
 )
 
