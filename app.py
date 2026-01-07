@@ -66,7 +66,7 @@ def load_data():
         (df['Title'].str.contains("Big Inch", na=False)) &
         (df['City'] == "Longview"),
         ['latitude', 'longitude']
-    ] = [32.27273, -94.4298]
+    ] = [32.4538000577799, -94.7126781845732]
     
     return df
 
