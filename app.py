@@ -3,6 +3,7 @@ import pandas as pd
 import folium
 from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium
+import utm
 
 # 1. PAGE CONFIGURATION 
 st.set_page_config(
@@ -41,35 +42,51 @@ st.markdown("""Note: Data is accurate based on Texas Historical Commission/Texas
 # 4. LOAD DATA
 @st.cache_data
 def load_data():
-    df = pd.read_csv("german_sites_cleaned.csv")
-    df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
+    # 1. LOAD RAW DATA
+    # We use 'latin1' to handle special characters in the raw file
+    df = pd.read_csv("german_sites_full.csv", encoding='latin1')
 
-    # 1. FIX: George Washington Savage (Malone, TX)
-    df.loc[df['Title'].str.contains("Savage", na=False), ['latitude', 'longitude']] = [31.9213, -96.8942]
-
-    # 2. FIX: St. Paul's Evangelical (Dallas, TX)
-    df.loc[
-        (df['Title'].str.contains("St. Paul", na=False)) & 
-        (df['City'] == "Dallas"), 
-        ['latitude', 'longitude']
-    ] = [32.7767, -96.7970]
-
-    # 3. FIX: Good Hope Cemetery (Giddings, TX)
-    df.loc[
-        (df['Title'].str.contains("Good Hope", na=False)) & 
-        (df['City'] == "Giddings"),
-        ['latitude', 'longitude']
-    ] = [30.1830, -96.9364]
-
-    #4. Big Inch Pipeline (Longview, TX)
-    df.loc[
-        (df['Title'].str.contains("Big Inch", na=False)) &
-        (df['City'] == "Longview"),
-        ['latitude', 'longitude']
-    ] = [32.4538000577799, -94.7126781845732]
+    # 2. CLEAN COLUMNS
+    # Rename the raw column names to what our app expects
+    df = df.rename(columns={'MarkerTex': 'MarkerText', 'marker_text': 'MarkerText'})
     
-    return df
+    # 3. REMOVE DUPLICATES (The Fix)
+    # If two rows have the same Title and City, we keep only the first one.
+    df = df.drop_duplicates(subset=['Title', 'City'], keep='first')
 
+    # 4. FILTER FOR GERMAN HISTORY
+    # We only want rows that mention these keywords
+    keywords = ["German", "Verein", "Prussia", "Deutsch", "Adelsverein", "Liederkranz", "Alsatian"]
+    pattern = '|'.join(keywords)
+    
+    # Check both the Title and the Marker Text
+    df = df[
+        df['Title'].str.contains(pattern, case=False, na=False) | 
+        df['MarkerText'].str.contains(pattern, case=False, na=False)
+    ]
+
+    # 5. FIX COORDINATES (UTM -> Latitude/Longitude)
+    def get_lat_lon(row):
+        try:
+            # If we already have GPS data, keep it
+            if pd.notnull(row.get('latitude')) and pd.notnull(row.get('longitude')):
+                return pd.Series([row['latitude'], row['longitude']])
+            
+            # Otherwise, convert the Surveyor Numbers (UTM) to GPS
+            # Zone 14R covers most of Texas
+            lat, lon = utm.to_latlon(row['Utm_East'], row['Utm_North'], 14, 'R')
+            return pd.Series([lat, lon])
+        except:
+            return pd.Series([None, None])
+
+    # Apply the conversion
+    df[['latitude', 'longitude']] = df.apply(get_lat_lon, axis=1)
+
+    # 6. FINAL CLEANUP
+    df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
+    df = df.dropna(subset=['latitude', 'longitude']) # Drop rows that still have no location
+
+    return df
 try:
     df = load_data()
 except:
