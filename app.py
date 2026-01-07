@@ -38,6 +38,9 @@ st.markdown("""
     This interactive map uses historical data to visualize their legacy in the form of historical markers that can be found throughout the state. You can filter specific historical markers below, as well as specific year ranges using the tab on the left. 
 """)
 st.markdown("""Note: Data is accurate based on Texas Historical Commission/Texas Historic Sites Atlas as of Jan. 2026  """)
+st.sidebar.write("---")
+st.sidebar.write(f"📂 Rows Loaded: {len(df)}")
+st.sidebar.write(f"📄 File Used: german_sites_full.csv") # Just text, but helps us check version
 
 # 4. LOAD DATA
 @st.cache_data
