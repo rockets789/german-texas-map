@@ -1,4 +1,4 @@
-import streamlit as st
+bar.import streamlit as st
 import pandas as pd
 import folium
 from folium.plugins import MarkerCluster
@@ -64,10 +64,10 @@ year_range = st.sidebar.slider("Year Established", min_year, max_year, (1840, 19
 
     # Category Filter
 categories = ["All", "Dance Hall", "School", "Church", "Cemetery", "Verein", "Saloon", "Store"]
-selected_category = st.selectbox("Select Category", categories)
+selected_category = st.sidebar.selectbox("Select Category", categories)
     
     # Search Filter
-search_query = st.text_input("Search by Name", placeholder="e.g., Schmidt, Krause...")
+search_query = st.sidebar.text_input("Search by Name", placeholder="e.g., Schmidt, Krause...")
     
 
 # 4. THE BIG SPINNER WRAPPER
