@@ -94,7 +94,26 @@ with st.spinner('Filtering data and redrawing map...'):
         filtered_df = filtered_df[filtered_df['Title'].str.contains(search_query, case=False, na=False)]
 
     # B. UPDATE COUNTER (Now accurate!)
-    st.sidebar.markdown(f"### Found {len(filtered_df)} Sites")
+    # --- PASTE THIS REPLACEMENT BLOCK ---
+    
+    # Create two columns side-by-side in the sidebar
+    col1, col2 = st.sidebar.columns(2)
+    
+    # Metric 1: Total Count
+    col1.metric("Total Sites", len(filtered_df))
+    
+    # Metric 2: Top County (The Data Science Part)
+    # We check if data exists, then find the 'mode' (most common value)
+    if not filtered_df.empty and 'County' in filtered_df.columns:
+        try:
+            top_county = filtered_df['County'].dropna().mode().iloc[0]
+            col2.metric("Top County", top_county)
+        except:
+            col2.metric("Top County", "N/A")
+    else:
+        col2.metric("Top County", "N/A")
+        
+    # ------------------------------------
 
     # C. DRAW MAP
     m = folium.Map(location=[30.27, -98.87], zoom_start=7, tiles="CartoDB positron")
