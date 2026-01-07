@@ -155,22 +155,22 @@ with st.spinner('Filtering data and redrawing map...'):
 
     # 1. SETUP THE TEXT
     # Get the description (or say "No details" if empty)
-    desc = str(row.get('MarkerText', ''))
-    if desc == "nan" or desc == "":
-        desc = "No additional details available."
+        desc = str(row.get('MarkerText', ''))
+        if desc == "nan" or desc == "":
+            desc = "No additional details available."
     
     # 2. MAKE THE HTML CARD
     # This creates the scrollable box
-    popup_html = f"""
-    <div style="width: 300px;">
-        <b>{row['Title']}</b><br>
-        <i>{row.get('City', '')}</i>
-        <hr>
-        <div style="height: 150px; overflow-y: auto;">
-            {desc}
+            popup_html = f"""
+            <div style="width: 300px;">
+            <b>{row['Title']}</b><br>
+            <i>{row.get('City', '')}</i>
+            <hr>
+            <div style="height: 150px; overflow-y: auto;">
+            {    desc}
+            </div>
         </div>
-    </div>
-    """
+        """
 
     # 3. SET THE COLOR
     color = 'blue'
