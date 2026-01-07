@@ -61,11 +61,12 @@ def load_data():
         ['latitude', 'longitude']
     ] = [30.1830, -96.9364]
 
+    #4. Big Inch Pipeline (Longview, TX)
     df.loc[
         (df['Title'].str.contains("Big Inch", na=False)) &
         (df['City'] == "Longview"),
         ['latitude', 'longitude']
-    ] = [32.27273, 94.4298]
+    ] = [32.27273, -94.4298]
     
     return df
 
