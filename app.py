@@ -43,6 +43,25 @@ st.markdown("""Note: Data is accurate based on Texas Historical Commission/Texas
 def load_data():
     df = pd.read_csv("german_sites_cleaned.csv")
     df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
+
+    # 1. FIX: George Washington Savage (Malone, TX)
+    df.loc[df['Title'].str.contains("Savage", na=False), ['latitude', 'longitude']] = [31.9213, -96.8942]
+
+    # 2. FIX: St. Paul's Evangelical (Dallas, TX)
+    df.loc[
+        (df['Title'].str.contains("St. Paul", na=False)) & 
+        (df['City'] == "Dallas"), 
+        ['latitude', 'longitude']
+    ] = [32.7767, -96.7970]
+
+    # 3. FIX: Good Hope Cemetery (Giddings, TX)
+    df.loc[
+        (df['Title'].str.contains("Good Hope", na=False)) & 
+        (df['City'] == "Giddings"),
+        ['latitude', 'longitude']
+    ] = [30.1830, -96.9364]
+    
+    # -----------------------------------------------
     return df
 
 try:
