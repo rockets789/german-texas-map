@@ -60,8 +60,13 @@ def load_data():
         (df['City'] == "Giddings"),
         ['latitude', 'longitude']
     ] = [30.1830, -96.9364]
+
+    df.loc[
+        (df['Title'].str.contains("Big Inch", na=False)) &
+        (df['City'] == "Longview"),
+        ['latitude', 'longitude']
+    ] = [32.27273, 94.4298]
     
-    # -----------------------------------------------
     return df
 
 try:
