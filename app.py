@@ -45,57 +45,49 @@ st.sidebar.write(f"📄 File Used: german_sites_full.csv") # Just text, but help
 # 4. LOAD DATA
 @st.cache_data
 def load_data():
-    # 1. LOAD RAW DATA
-    # We use 'latin1' to handle special characters in the raw file
+    # Load the Raw File
     df = pd.read_csv("german_sites_full.csv", encoding='latin1')
-
-    # 2. CLEAN COLUMNS
-    # Rename the raw column names to what our app expects
+    
+    # Rename Columns
     df = df.rename(columns={'MarkerTex': 'MarkerText', 'marker_text': 'MarkerText'})
     
-    # 3. REMOVE DUPLICATES (The Fix)
-    # If two rows have the same Title and City, we keep only the first one.
+    # Remove Duplicates
     df = df.drop_duplicates(subset=['Title', 'City'], keep='first')
 
-    # 4. FILTER FOR GERMAN HISTORY
-    # We only want rows that mention these keywords
+    # Filter for German Keywords
     keywords = ["German", "Verein", "Prussia", "Deutsch", "Adelsverein", "Liederkranz", "Alsatian"]
     pattern = '|'.join(keywords)
-    
-    # Check both the Title and the Marker Text
     df = df[
         df['Title'].str.contains(pattern, case=False, na=False) | 
         df['MarkerText'].str.contains(pattern, case=False, na=False)
     ]
 
-    # 5. FIX COORDINATES (UTM -> Latitude/Longitude)
+    # Convert Coordinates
     def get_lat_lon(row):
         try:
-            # If we already have GPS data, keep it
             if pd.notnull(row.get('latitude')) and pd.notnull(row.get('longitude')):
                 return pd.Series([row['latitude'], row['longitude']])
-            
-            # Otherwise, convert the Surveyor Numbers (UTM) to GPS
-            # Zone 14R covers most of Texas
             lat, lon = utm.to_latlon(row['Utm_East'], row['Utm_North'], 14, 'R')
             return pd.Series([lat, lon])
         except:
             return pd.Series([None, None])
 
-    # Apply the conversion
     df[['latitude', 'longitude']] = df.apply(get_lat_lon, axis=1)
-
-    # 6. FINAL CLEANUP
+    
+    # Final Cleanup
     df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
-    df = df.dropna(subset=['latitude', 'longitude']) # Drop rows that still have no location
-
+    df = df.dropna(subset=['latitude', 'longitude'])
+    
     return df
-try:
-    df = load_data()
-except:
-    st.error("⚠️ Data file not found. Please upload 'german_sites_cleaned.csv' to your repository.")
-    st.stop()
 
+# --- 3. ACTUALLY LOAD THE DATA ---
+# This is the moment 'df' is born!
+df = load_data()
+
+# --- 4. NOW IT IS SAFE TO USE 'df' ---
+st.sidebar.write("---")
+st.sidebar.write(f"📂 Rows Loaded: {len(df)}")
+st.sidebar.write(f"📄 File Used: german_sites_full.csv")
 # 5. SIDEBAR FILTERS
 with st.sidebar:
     st.sidebar.header("🔍 Explore the History")
