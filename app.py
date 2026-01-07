@@ -51,7 +51,20 @@ except:
 # 5. SIDEBAR FILTERS
 with st.sidebar:
     st.header("🔍 Explore the History")
-    
+
+    # --- START OF MISSING CODE ---
+
+# 1. The Refresh Button
+if st.sidebar.button("🔄 Force Reload"):
+    st.rerun()
+
+# 2. The Slider Definition
+# We MUST create 'year_range' here so the code below can use it!
+min_year = 1800
+max_year = 2024
+year_range = st.sidebar.slider("Year Established", min_year, max_year, (1840, 1900))
+
+# --- END OF MISSING CODE ---
     # Category Filter
     categories = ["All", "Dance Hall", "School", "Church", "Cemetery", "Verein", "Saloon", "Store"]
     selected_category = st.selectbox("Select Category", categories)
