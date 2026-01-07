@@ -59,68 +59,53 @@ with st.sidebar:
     # Search Filter
     search_query = st.text_input("Search by Name", placeholder="e.g., Schmidt, Krause...")
     
-    st.markdown("---")
-    st.markdown("### About")
-    st.info("Built with Python & Streamlit. Data courtesy of the Texas Historical Commission.")
+  # --- PASTE THIS BELOW 'search_query = ...' ---
 
-# TIME TRAVEL SLIDER
-    min_year = 1800
-    max_year = 2024
+# 4. THE BIG SPINNER WRAPPER
+with st.spinner('Filtering data and redrawing map...'):
     
-    year_range = st.sidebar.slider("Year Established", min_year, max_year, (1850, 1900))
+    # A. FILTER THE DATA
+    filtered_df = df.copy()
 
-# MANUAL REFRESH BUTTON
-if st.sidebar.button("🔄 Reload Map"):
-    st.rerun()
-
-# 6. FILTERING LOGIC
-filtered_df = df.copy()
-
-if selected_category != "All":
-    filtered_df = filtered_df[
-        filtered_df['Title'].str.contains(selected_category, case=False, na=False) | 
-        filtered_df['MarkerText'].str.contains(selected_category, case=False, na=False)
-    ]
-
-if search_query:
-    filtered_df = filtered_df[filtered_df['Title'].str.contains(search_query, case=False, na=False)]
-
-# 7. DASHBOARD METRICS (The "Pro" Touch)
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.metric("Total Sites Found", len(filtered_df))
-with col2:
-    # Try to find the most common city in the filtered results
-    if not filtered_df.empty and 'City' in filtered_df.columns:
-        top_city = filtered_df['City'].mode()[0]
-        st.metric("Top Hub", top_city)
-    else:
-        st.metric("Top Hub", "N/A")
-with col3:
-    st.metric("Category", selected_category)
-
-# Filter by Year (Keep sites within range OR sites with unknown years)
+    # Filter by Year (Keep sites in range OR sites with unknown years)
     filtered_df = filtered_df[
         (filtered_df['Year'].between(year_range[0], year_range[1])) | 
         (filtered_df['Year'].isna())
     ]
 
-# 8. THE MAP
-# We use 'CartoDB positron' for a clean, professional look that makes data pop
-m = folium.Map(location=[30.27, -98.87], zoom_start=7, tiles="CartoDB positron")
-marker_cluster = MarkerCluster().add_to(m)
+    # Filter by Category
+    if selected_category != "All":
+        filtered_df = filtered_df[
+            filtered_df['Title'].str.contains(selected_category, case=False, na=False) | 
+            filtered_df['MarkerText'].str.contains(selected_category, case=False, na=False)
+        ]
 
-# Limit markers to prevent crashing on huge datasets
-for idx, row in filtered_df.head(2000).iterrows():
-    folium.Marker(
-        location=[row['latitude'], row['longitude']],
-        popup=f"<b>{row['Title']}</b><br>{row.get('City', 'Texas')}",
-        tooltip=row['Title'],
-        icon=folium.Icon(color="darkblue", icon="info-sign")
-    ).add_to(marker_cluster)
+    # Filter by Search
+    if search_query:
+        filtered_df = filtered_df[filtered_df['Title'].str.contains(search_query, case=False, na=False)]
 
-st_folium(m, width=None, height=600)
+    # B. UPDATE COUNTER (Now accurate!)
+    st.sidebar.markdown(f"### Found {len(filtered_df)} Sites")
 
-# 9. DATA TABLE
-with st.expander("📂 View Raw Data Record"):
-    st.dataframe(filtered_df)
+    # C. DRAW MAP
+    m = folium.Map(location=[30.27, -98.87], zoom_start=7, tiles="CartoDB positron")
+    
+    # Faster clustering options
+    marker_cluster = MarkerCluster(options={'spiderfyOnMaxZoom': False}).add_to(m)
+
+    for idx, row in filtered_df.head(2000).iterrows():
+        color = 'blue'
+        text = str(row['Title']) + str(row.get('MarkerText', ''))
+        
+        if 'Dance' in text: color = 'red'
+        elif 'Church' in text: color = 'purple'
+        elif 'School' in text: color = 'green'
+        
+        folium.Marker(
+            location=[row['latitude'], row['longitude']],
+            popup=f"<b>{row['Title']}</b><br>{row.get('City','')}",
+            icon=folium.Icon(color=color, icon="info-sign")
+        ).add_to(marker_cluster)
+
+    # Display Map
+    st_folium(m, width=None, height=600)
