@@ -63,7 +63,7 @@ if st.sidebar.button("🔄 Force Reload"):
 # 2. The Slider Definition
 min_year = 1800
 max_year = 2024
-year_range = st.sidebar.slider("Year Established", min_year, max_year, (1840, 1900))
+year_range = st.sidebar.slider("Year Established", min_year, max_year, (1800, 2024))
 
 
     # Category Filter
