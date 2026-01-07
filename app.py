@@ -67,10 +67,10 @@ year_range = st.sidebar.slider("Year Established", min_year, max_year, (1840, 19
 # --- END OF MISSING CODE ---
     # Category Filter
 categories = ["All", "Dance Hall", "School", "Church", "Cemetery", "Verein", "Saloon", "Store"]
-    selected_category = st.selectbox("Select Category", categories)
+selected_category = st.selectbox("Select Category", categories)
     
     # Search Filter
-    search_query = st.text_input("Search by Name", placeholder="e.g., Schmidt, Krause...")
+search_query = st.text_input("Search by Name", placeholder="e.g., Schmidt, Krause...")
     
   # --- PASTE THIS BELOW 'search_query = ...' ---
 
