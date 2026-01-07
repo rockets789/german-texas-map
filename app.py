@@ -85,6 +85,23 @@ with st.sidebar:
 if st.sidebar.button("🔄 Force Reload"):
     st.rerun()
 
+
+# --- DUPLICATE HUNTER (Paste this near the top of the Sidebar) ---
+st.sidebar.markdown("---")
+st.sidebar.subheader("🕵️ Data Detective")
+
+# 1. Check for Duplicate Titles
+dupes = df[df.duplicated(subset=['Title'], keep=False)]
+
+if not dupes.empty:
+    st.sidebar.error(f"Found {len(dupes)} entries sharing the same name!")
+    # Show the first few duplicates so you can identify them
+    st.sidebar.write(dupes[['Title', 'City']].sort_values(by='Title'))
+else:
+    st.sidebar.success("No duplicates found based on Name.")
+
+
+
 # 2. The Slider Definition
 min_year = 1800
 max_year = 2024
