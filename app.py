@@ -38,6 +38,8 @@ st.markdown("""
 def load_data():
     df = pd.read_csv("german_sites_cleaned.csv")
     # We assume there is a 'year' or similar column. If not, we skip date metrics.
+    # Force the Year column to be numbers (turns "1850?" into NaN)
+    df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
     return df
 
 try:
@@ -60,6 +62,12 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### About")
     st.info("Built with Python & Streamlit. Data courtesy of the Texas Historical Commission.")
+
+# TIME TRAVEL SLIDER
+    min_year = 1800
+    max_year = 2024
+    
+    year_range = st.sidebar.slider("Year Established", min_year, max_year, (1850, 1900))
 
 # 6. FILTERING LOGIC
 filtered_df = df.copy()
@@ -86,6 +94,12 @@ with col2:
         st.metric("Top Hub", "N/A")
 with col3:
     st.metric("Category", selected_category)
+
+# Filter by Year (Keep sites within range OR sites with unknown years)
+    filtered_df = filtered_df[
+        (filtered_df['Year'].between(year_range[0], year_range[1])) | 
+        (filtered_df['Year'].isna())
+    ]
 
 # 8. THE MAP
 # We use 'CartoDB positron' for a clean, professional look that makes data pop
