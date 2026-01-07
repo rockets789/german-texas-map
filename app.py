@@ -30,7 +30,7 @@ st.markdown("""
 st.title("🇩🇪 The German Belt Navigator")
 st.markdown("""
     Between 1830 and 1900, thousands of German immigrants settled in Texas, with the majority settling in Central Texas. This region is also known as the Texas Hill Country.
-    This interactive map uses historical data to visualize their legacy in the form of historical markers that can be found throughout the state. You can filter specific historical markers below, as well as specific year ranges using the tab on the left.  
+    This interactive map uses historical data to visualize their legacy in the form of historical markers that can be found throughout the state. You can filter specific historical markers below, as well as specific year ranges using the tab on the left. // Note: Data is accurate as of Jan. 2026 
 """)
 
 # 4. LOAD DATA
@@ -52,7 +52,6 @@ except:
 with st.sidebar:
     st.header("🔍 Explore the History")
 
-    # --- START OF MISSING CODE ---
 
 # 1. The Refresh Button
 if st.sidebar.button("🔄 Force Reload"):
@@ -64,7 +63,7 @@ min_year = 1800
 max_year = 2024
 year_range = st.sidebar.slider("Year Established", min_year, max_year, (1840, 1900))
 
-# --- END OF MISSING CODE ---
+
     # Category Filter
 categories = ["All", "Dance Hall", "School", "Church", "Cemetery", "Verein", "Saloon", "Store"]
 selected_category = st.selectbox("Select Category", categories)
@@ -72,7 +71,6 @@ selected_category = st.selectbox("Select Category", categories)
     # Search Filter
 search_query = st.text_input("Search by Name", placeholder="e.g., Schmidt, Krause...")
     
-  # --- PASTE THIS BELOW 'search_query = ...' ---
 
 # 4. THE BIG SPINNER WRAPPER
 with st.spinner('Filtering data and redrawing map...'):
