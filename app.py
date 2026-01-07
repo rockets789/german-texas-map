@@ -45,16 +45,16 @@ st.sidebar.write(f"📄 File Used: german_sites_full.csv") # Just text, but help
 # 4. LOAD DATA
 @st.cache_data
 def load_data():
-    # Load the Raw File
+    # Load the Raw File (using latin1 for special characters)
     df = pd.read_csv("german_sites_full.csv", encoding='latin1')
     
-    # Rename Columns
+    # Rename Columns to standard names
     df = df.rename(columns={'MarkerTex': 'MarkerText', 'marker_text': 'MarkerText'})
     
-    # Remove Duplicates
+    # Remove Duplicates (The "Data Detective" Fix)
     df = df.drop_duplicates(subset=['Title', 'City'], keep='first')
 
-    # Filter for German Keywords
+    # Filter for German Keywords (The "Gold Sifter")
     keywords = ["German", "Verein", "Prussia", "Deutsch", "Adelsverein", "Liederkranz", "Alsatian"]
     pattern = '|'.join(keywords)
     df = df[
@@ -62,11 +62,13 @@ def load_data():
         df['MarkerText'].str.contains(pattern, case=False, na=False)
     ]
 
-    # Convert Coordinates
+    # Convert Coordinates (UTM -> Latitude/Longitude)
     def get_lat_lon(row):
         try:
+            # If GPS already exists, use it
             if pd.notnull(row.get('latitude')) and pd.notnull(row.get('longitude')):
                 return pd.Series([row['latitude'], row['longitude']])
+            # Otherwise convert UTM
             lat, lon = utm.to_latlon(row['Utm_East'], row['Utm_North'], 14, 'R')
             return pd.Series([lat, lon])
         except:
@@ -79,7 +81,6 @@ def load_data():
     df = df.dropna(subset=['latitude', 'longitude'])
     
     return df
-
 # --- 3. ACTUALLY LOAD THE DATA ---
 # This is the moment 'df' is born!
 df = load_data()
@@ -94,8 +95,8 @@ with st.sidebar:
 
 
 # 1. The Refresh Button
-if st.sidebar.button("🔄 Force Reload"):
-    st.rerun()
+    if st.sidebar.button("🔄 Force Reload"):
+        st.rerun()
 
 
 # --- DUPLICATE HUNTER (Paste this near the top of the Sidebar) ---
