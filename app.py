@@ -32,7 +32,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # 3. TITLE SECTION
-st.title("🇩🇪 The German Belt Navigator")
+st.title("🇩🇪 The German Belt Navigator v2")
 st.markdown("""
     Between 1830 and 1900, thousands of German immigrants settled in Texas, with the majority settling in Central Texas. This region is also known as the Texas Hill Country.
     This interactive map uses historical data to visualize their legacy in the form of historical markers that can be found throughout the state. You can filter specific historical markers below, as well as specific year ranges using the tab on the left. 
