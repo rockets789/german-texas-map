@@ -95,7 +95,8 @@ with st.sidebar:
     st.subheader("🕵️ Data Detective")
 
     # Duplicate Hunter
-    dupes = df[df.duplicated(subset=['Title'], keep=False)]
+    # NEW (Smart)
+    dupes = df[df.duplicated(subset=['Title', 'City'], keep=False)]
     if not dupes.empty:
         st.error(f"Found {len(dupes)} entries sharing the same name!")
         st.dataframe(dupes[['Title', 'City']].sort_values(by='Title'), height=150)
