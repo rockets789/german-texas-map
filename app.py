@@ -157,7 +157,7 @@ def load_data():
     mask - df['Title'].str.contains("Geroge Washington Savage", case=False, na=False)
 
     if mask.any():
-            df.loc(mask, 'latitude'] = 31.9185
+            df.loc[mask, 'latitude'] = 31.9185
         df.loc[mask, 'longitude'] = -96.8970
     # Final Cleanup
 
