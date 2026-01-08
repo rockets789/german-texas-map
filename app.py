@@ -181,7 +181,7 @@ with st.spinner('Filtering data and redrawing map...'):
     # Faster clustering options
     marker_cluster = MarkerCluster(options={'spiderfyOnMaxZoom': False}).add_to(m)
 
-    for idx, row in filtered_df.head(2000).iterrows():
+for idx, row in filtered_df.head(2000).iterrows():
         
         # --- EVERYTHING BELOW MUST BE INDENTED ---
         
