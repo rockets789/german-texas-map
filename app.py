@@ -401,4 +401,4 @@ for idx, row in filtered_df.head(2000).iterrows():
             continue
 
 
-st_folium(m, width=None, height=600, returned_objects=[])
+st_folium(m, width=1200, height=600, returned_objects=[])
