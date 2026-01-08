@@ -364,41 +364,151 @@ with st.spinner('Filtering data and redrawing map...'):
 
 
 for idx, row in filtered_df.head(2000).iterrows():
+
+
+
         try: 
-            # 1. GET DESCRIPTION
+
+
+
+        # --- EVERYTHING BELOW MUST BE INDENTED ---
+
+
+
+        
+
+
+
+        # 1. GET DESCRIPTION
+
+
+
             desc = str(row.get('MarkerText', ''))
+
+
+
             if desc == "nan" or desc == "None" or desc == "":
+
+
+
                 desc = "No additional details available."
 
-            # 2. CREATE HTML POPUP
+
+
+
+
+
+
+        # 2. CREATE HTML POPUP
+
+
+
             popup_html = f"""
+
+
+
             <div style="width: 300px; font-family: sans-serif;">
+
+
+
                 <b>{row['Title']}</b><br>
+
+
+
                 <i style="color: gray;">{row.get('City', 'Texas')}</i>
+
+
+
                 <hr style="margin: 5px 0;">
+
+
+
                 <div style="height: 150px; overflow-y: auto; font-size: 14px;">
+
+
+
                     {desc}
+
+
+
                 </div>
+
+
+
             </div>
+
+
+
             """
 
-            # 3. COLOR LOGIC
+
+
+
+
+
+
+        # 3. COLOR LOGIC
+
+
+
             color = 'blue'
+
+
+
             full_text = str(row['Title']) + " " + desc
+
+
+
             if 'Dance' in full_text: color = 'red'
+
+
+
             elif 'Church' in full_text: color = 'purple'
+
+
+
             elif 'School' in full_text: color = 'green'
+
             elif 'Cemetery' in full_text: color = 'gray'
 
-            # 4. DRAW THE MARKER
+
+
+
+
+    # 4. DRAW THE MARKER
+
+
+
             folium.Marker(
+
+
+
                 location=[row['latitude'], row['longitude']],
+
+
+
                 popup=folium.Popup(popup_html, max_width=350),
+
+
+
                 icon=folium.Icon(color=color, icon="info-sign")
-            ).add_to(marker_cluster)
+
+
+
+                ).add_to(marker_cluster)
+
+
 
         except Exception:
+
+
+
             continue
 
 
-st_folium(m, width=1200, height=600, returned_objects=[])
+
+    # Display Map
+
+
+
+st_folium(m, width=None, height=600, returned_objects=[])
