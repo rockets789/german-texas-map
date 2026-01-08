@@ -78,6 +78,12 @@ st.markdown("""
 
 st.markdown("""Note: Data is accurate based on Texas Historical Commission/Texas Historic Sites Atlas as of Jan. 2026  """)
 
+# --- MAIN PAGE BANNER ---
+try:
+    st.image("Flag_of_Texas.svg", caption="", use_container_width=True)
+except:
+    pass # If no image is found, just do nothing
+
 ##st.sidebar.write("---")
 
 ##st.sidebar.write(f"📂 Rows Loaded: {len(df)}")
