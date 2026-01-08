@@ -432,9 +432,9 @@ with st.spinner('Filtering data and redrawing map...'):
 
                 ).add_to(marker_cluster)
 
-                except Exception:
+        except Exception:
 
-                     continue
+            continue
 
     # Display Map
 
