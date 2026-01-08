@@ -83,6 +83,7 @@ def load_data():
     return df
 # --- 3. ACTUALLY LOAD THE DATA ---
 # This is the moment 'df' is born!
+
 df = load_data()
 
 # --- 4. NOW IT IS SAFE TO USE 'df' ---
