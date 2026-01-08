@@ -169,7 +169,6 @@ def load_data():
 # This is the moment 'df' is born!
 
 
-
 df = load_data()
 
 
@@ -438,4 +437,4 @@ with st.spinner('Filtering data and redrawing map...'):
 
     # Display Map
 
-    st_folium(m, width=None, height=600, returned_objects=[])
+st_folium(m, width=None, height=600, returned_objects=[])
