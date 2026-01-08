@@ -154,7 +154,7 @@ def load_data():
 
     # Manual override for broken sites:
 
-    mask - df['Title'].str.contains("Geroge Washington Savage", case=False, na=False)
+    mask = df['Title'].str.contains("Geroge Washington Savage", case=False, na=False)
 
     if mask.any():
             df.loc[mask, 'latitude'] = 31.9185
