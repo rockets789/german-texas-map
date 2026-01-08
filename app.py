@@ -99,7 +99,7 @@ with st.sidebar:
   #  dupes = df[df.duplicated(subset=['Title', 'City'], keep=False)]
   #  if not dupes.empty:
   #      st.error(f"Found {len(dupes)} entries sharing the same name!")
-        st.dataframe(dupes[['Title', 'City']].sort_values(by='Title'), height=150)
+  #      st.dataframe(dupes[['Title', 'City']].sort_values(by='Title'), height=150)
   #  else:
   #         st.success("No duplicates found based on Name.")
 
