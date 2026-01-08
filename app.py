@@ -367,10 +367,6 @@ with st.spinner('Filtering data and redrawing map...'):
 
         try: 
 
-        # --- EVERYTHING BELOW MUST BE INDENTED ---
-
-        
-
         # 1. GET DESCRIPTION
 
             desc = str(row.get('MarkerText', ''))
@@ -416,6 +412,7 @@ with st.spinner('Filtering data and redrawing map...'):
             elif 'Church' in full_text: color = 'purple'
 
             elif 'School' in full_text: color = 'green'
+                
             elif 'Cemetery' in full_text: color = 'gray'
 
 
@@ -431,9 +428,9 @@ with st.spinner('Filtering data and redrawing map...'):
 
                 ).add_to(marker_cluster)
 
-        except Exception:
+            except Exception:
 
-            continue
+                continue
 
     # Display Map
 
