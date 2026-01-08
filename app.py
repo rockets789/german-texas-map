@@ -104,7 +104,7 @@ def load_data():
 
     
 
-    # Remove Duplicates (The "Data Detective" Fix)
+    # Remove Duplicates 
 
     df = df.drop_duplicates(subset=['Title', 'City'], keep='first')
 
@@ -152,8 +152,13 @@ def load_data():
 
     df[['latitude', 'longitude']] = df.apply(get_lat_lon, axis=1)
 
-    
+    # Manual override for broken sites:
 
+    mask - df['Title'].str.contains("Geroge Washington Savage", case=False, na=False)
+
+    if mask.any():
+            df.loc(mask, 'latitude'] = 31.9185
+        df.loc[mask, 'longitude'] = -96.8970
     # Final Cleanup
 
     df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
@@ -188,31 +193,31 @@ with st.sidebar:
 
 
 
-# --- DUPLICATE HUNTER (Paste this near the top of the Sidebar) ---
+# --- DUPLICATE HUNTER 
 
-st.sidebar.markdown("---")
+#st.sidebar.markdown("---")
 
-st.sidebar.subheader("🕵️ Data Detective")
+#st.sidebar.subheader("🕵️ Data Detective")
 
 
 
 # 1. Check for Duplicate Titles
 
-dupes = df[df.duplicated(subset=['Title', 'City'], keep=False)]
+#dupes = df[df.duplicated(subset=['Title', 'City'], keep=False)]
 
 
 
-if not dupes.empty:
+#if not dupes.empty:
 
-    st.sidebar.error(f"Found {len(dupes)} entries sharing the same name!")
+#    st.sidebar.error(f"Found {len(dupes)} entries sharing the same name!")
 
     # Show the first few duplicates so you can identify them
 
-    st.sidebar.write(dupes[['Title', 'City']].sort_values(by='Title'), height =150)
+#    st.sidebar.write(dupes[['Title', 'City']].sort_values(by='Title'), height =150)
 
-else:
+#else:
 
-    st.sidebar.success("No duplicates found based on Name.")
+#    st.sidebar.success("No duplicates found based on Name.")
 
 
 
