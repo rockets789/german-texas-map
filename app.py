@@ -198,7 +198,7 @@ st.sidebar.subheader("🕵️ Data Detective")
 
 # 1. Check for Duplicate Titles
 
-dupes = df[df.duplicated(subset=['Title'], keep=False)]
+dupes = df[df.duplicated(subset=['Title', 'City'], keep=False)]
 
 
 
@@ -208,7 +208,7 @@ if not dupes.empty:
 
     # Show the first few duplicates so you can identify them
 
-    st.sidebar.write(dupes[['Title', 'City']].sort_values(by='Title'))
+    st.sidebar.write(dupes[['Title', 'City']].sort_values(by='Title'), height =150)
 
 else:
 
