@@ -363,74 +363,74 @@ with st.spinner('Filtering data and redrawing map...'):
 
 
 
-    for idx, row in filtered_df.head(2000).iterrows():
+for idx, row in filtered_df.head(2000).iterrows():
 
-        try: 
+    try: 
 
-        # 1. GET DESCRIPTION
+    # 1. GET DESCRIPTION
 
-            desc = str(row.get('MarkerText', ''))
+        desc = str(row.get('MarkerText', ''))
 
-            if desc == "nan" or desc == "None" or desc == "":
+        if desc == "nan" or desc == "None" or desc == "":
 
-                desc = "No additional details available."
+            desc = "No additional details available."
 
 
 
-        # 2. CREATE HTML POPUP
+    # 2. CREATE HTML POPUP
 
-            popup_html = f"""
+        popup_html = f"""
 
-            <div style="width: 300px; font-family: sans-serif;">
+        <div style="width: 300px; font-family: sans-serif;">
 
-                <b>{row['Title']}</b><br>
+            <b>{row['Title']}</b><br>
 
-                <i style="color: gray;">{row.get('City', 'Texas')}</i>
+            <i style="color: gray;">{row.get('City', 'Texas')}</i>
 
-                <hr style="margin: 5px 0;">
+            <hr style="margin: 5px 0;">
 
-                <div style="height: 150px; overflow-y: auto; font-size: 14px;">
+            <div style="height: 150px; overflow-y: auto; font-size: 14px;">
 
-                    {desc}
-
-                </div>
+                {desc}
 
             </div>
 
-            """
+        </div>
+
+        """
 
 
 
-        # 3. COLOR LOGIC
+    # 3. COLOR LOGIC
 
-            color = 'blue'
+        color = 'blue'
 
-            full_text = str(row['Title']) + " " + desc
+        full_text = str(row['Title']) + " " + desc
 
-            if 'Dance' in full_text: color = 'red'
+        if 'Dance' in full_text: color = 'red'
 
-            elif 'Church' in full_text: color = 'purple'
+        elif 'Church' in full_text: color = 'purple'
 
-            elif 'School' in full_text: color = 'green'
-                
-            elif 'Cemetery' in full_text: color = 'gray'
+        elif 'School' in full_text: color = 'green'
+            
+        elif 'Cemetery' in full_text: color = 'gray'
 
 
-    # 4. DRAW THE MARKER
+# 4. DRAW THE MARKER
 
-            folium.Marker(
+        folium.Marker(
 
-                location=[row['latitude'], row['longitude']],
+            location=[row['latitude'], row['longitude']],
 
-                popup=folium.Popup(popup_html, max_width=350),
+            popup=folium.Popup(popup_html, max_width=350),
 
-                icon=folium.Icon(color=color, icon="info-sign")
+            icon=folium.Icon(color=color, icon="info-sign")
 
-                ).add_to(marker_cluster)
+            ).add_to(marker_cluster)
 
-            except Exception:
+        except Exception:
 
-                continue
+            continue
 
     # Display Map
 
