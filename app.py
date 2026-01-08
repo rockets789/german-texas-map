@@ -23,7 +23,7 @@ st.markdown("""
         max-width: 500px;
     }
     div.stMetric {
-        background-color: #ffffff;
+        background-color: #f5f5f5;
         border: 1px solid #e6e6e6;
         padding: 10px;
         border-radius: 5px;
