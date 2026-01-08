@@ -96,12 +96,12 @@ with st.sidebar:
 
     # Duplicate Hunter
     # NEW (Smart)
-    dupes = df[df.duplicated(subset=['Title', 'City'], keep=False)]
-    if not dupes.empty:
-        st.error(f"Found {len(dupes)} entries sharing the same name!")
+  #  dupes = df[df.duplicated(subset=['Title', 'City'], keep=False)]
+  #  if not dupes.empty:
+  #      st.error(f"Found {len(dupes)} entries sharing the same name!")
         st.dataframe(dupes[['Title', 'City']].sort_values(by='Title'), height=150)
-    else:
-        st.success("No duplicates found based on Name.")
+  #  else:
+  #         st.success("No duplicates found based on Name.")
 
     st.markdown("---")
     st.subheader("Filter Options")
