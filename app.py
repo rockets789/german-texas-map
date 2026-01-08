@@ -210,22 +210,13 @@ with st.spinner('Filtering data and redrawing map...'):
         elif 'School' in full_text: color = 'green'
         elif 'Cemetery' in full_text: color = 'gray'
 
-        # 4. DRAW MARKER
-        folium.Marker(
-            location=[row['latitude'], row['longitude']],
-            popup=folium.Popup(popup_html, max_width=350),
-            icon=folium.Icon(color=color, icon="info-sign")
-        ).add_to(marker_cluster)
-        
-        # --- END OF LOOP ---
-
     # 4. DRAW THE MARKER
         folium.Marker(
             location=[row['latitude'], row['longitude']],
             popup=folium.Popup(popup_html, max_width=350),
             icon=folium.Icon(color=color, icon="info-sign")
             ).add_to(marker_cluster)
-    except Exception:
-        continue
+        except Exception:
+            continue
     # Display Map
     st_folium(m, width=None, height=600, returned_objects=[])
