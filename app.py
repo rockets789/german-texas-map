@@ -164,22 +164,9 @@ def load_data():
 
     return df
 
-# --- 3. ACTUALLY LOAD THE DATA ---
-
-# This is the moment 'df' is born!
-
 
 df = load_data()
 
-
-
-# --- 4. NOW IT IS SAFE TO USE 'df' ---
-
-st.sidebar.write("---")
-
-st.sidebar.write(f"📂 Rows Loaded: {len(df)}")
-
-st.sidebar.write(f"📄 File Used: german_sites_full.csv")
 
 # 5. SIDEBAR FILTERS
 
