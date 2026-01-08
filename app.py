@@ -5,14 +5,14 @@ from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium
 import utm
 
-# 1. PAGE CONFIGURATION 
+# --- 1. PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="German Texas Heritage",
     page_icon="🇩🇪",
     layout="wide"
 )
 
-# 2. CUSTOM CSS 
+# --- 2. CUSTOM CSS ---
 st.markdown("""
     <style>
     .main {
@@ -21,9 +21,9 @@ st.markdown("""
     [data-testid="stSidebar"] {
         min-width: 350px;
         max-width: 500px;
-        }
+    }
     div.stMetric {
-        background-color: #808080;
+        background-color: #ffffff;
         border: 1px solid #e6e6e6;
         padding: 10px;
         border-radius: 5px;
@@ -31,30 +31,27 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 3. TITLE SECTION
+# --- 3. TITLE SECTION ---
 st.title("🇩🇪 The German Belt Navigator v2")
 st.markdown("""
-    Between 1830 and 1900, thousands of German immigrants settled in Texas, with the majority settling in Central Texas. This region is also known as the Texas Hill Country.
-    This interactive map uses historical data to visualize their legacy in the form of historical markers that can be found throughout the state. You can filter specific historical markers below, as well as specific year ranges using the tab on the left. 
+    Between 1830 and 1900, thousands of German immigrants settled in Texas, with the majority settling in Central Texas. 
+    This interactive map uses historical data to visualize their legacy.
 """)
-st.markdown("""Note: Data is accurate based on Texas Historical Commission/Texas Historic Sites Atlas as of Jan. 2026  """)
-st.sidebar.write("---")
-st.sidebar.write(f"📂 Rows Loaded: {len(df)}")
-st.sidebar.write(f"📄 File Used: german_sites_full.csv") # Just text, but helps us check version
+st.markdown("Note: Data source - Texas Historical Commission (Jan 2026)")
 
-# 4. LOAD DATA
+# --- 4. DATA LOADING FUNCTION ---
 @st.cache_data
 def load_data():
-    # Load the Raw File (using latin1 for special characters)
+    # Load the Raw File
     df = pd.read_csv("german_sites_full.csv", encoding='latin1')
     
-    # Rename Columns to standard names
+    # Rename Columns
     df = df.rename(columns={'MarkerTex': 'MarkerText', 'marker_text': 'MarkerText'})
     
-    # Remove Duplicates (The "Data Detective" Fix)
+    # Remove Duplicates
     df = df.drop_duplicates(subset=['Title', 'City'], keep='first')
 
-    # Filter for German Keywords (The "Gold Sifter")
+    # Filter for German Keywords
     keywords = ["German", "Verein", "Prussia", "Deutsch", "Adelsverein", "Liederkranz", "Alsatian"]
     pattern = '|'.join(keywords)
     df = df[
@@ -65,10 +62,8 @@ def load_data():
     # Convert Coordinates (UTM -> Latitude/Longitude)
     def get_lat_lon(row):
         try:
-            # If GPS already exists, use it
             if pd.notnull(row.get('latitude')) and pd.notnull(row.get('longitude')):
                 return pd.Series([row['latitude'], row['longitude']])
-            # Otherwise convert UTM
             lat, lon = utm.to_latlon(row['Utm_East'], row['Utm_North'], 14, 'R')
             return pd.Series([lat, lon])
         except:
@@ -81,89 +76,74 @@ def load_data():
     df = df.dropna(subset=['latitude', 'longitude'])
     
     return df
-# --- 3. ACTUALLY LOAD THE DATA ---
-# This is the moment 'df' is born!
 
+# --- 5. LOAD DATA ---
 df = load_data()
 
-# --- 4. NOW IT IS SAFE TO USE 'df' ---
+# --- 6. SIDEBAR SETUP ---
 st.sidebar.write("---")
 st.sidebar.write(f"📂 Rows Loaded: {len(df)}")
 st.sidebar.write(f"📄 File Used: german_sites_full.csv")
-# 5. SIDEBAR FILTERS
+
 with st.sidebar:
-    st.sidebar.header("🔍 Explore the History")
-
-
-# 1. The Refresh Button
-    if st.sidebar.button("🔄 Force Reload"):
+    st.header("🔍 Explore the History")
+    
+    if st.button("🔄 Force Reload"):
         st.rerun()
 
+    st.markdown("---")
+    st.subheader("🕵️ Data Detective")
 
-# --- DUPLICATE HUNTER (Paste this near the top of the Sidebar) ---
-st.sidebar.markdown("---")
-st.sidebar.subheader("🕵️ Data Detective")
+    # Duplicate Hunter
+    dupes = df[df.duplicated(subset=['Title'], keep=False)]
+    if not dupes.empty:
+        st.error(f"Found {len(dupes)} entries sharing the same name!")
+        st.dataframe(dupes[['Title', 'City']].sort_values(by='Title'), height=150)
+    else:
+        st.success("No duplicates found based on Name.")
 
-# 1. Check for Duplicate Titles
-dupes = df[df.duplicated(subset=['Title'], keep=False)]
+    st.markdown("---")
+    st.subheader("Filter Options")
 
-if not dupes.empty:
-    st.sidebar.error(f"Found {len(dupes)} entries sharing the same name!")
-    # Show the first few duplicates so you can identify them
-    st.sidebar.write(dupes[['Title', 'City']].sort_values(by='Title'))
-else:
-    st.sidebar.success("No duplicates found based on Name.")
-
-
-
-# 2. The Slider Definition
-min_year = 1800
-max_year = 2024
-year_range = st.sidebar.slider("Year Established", min_year, max_year, (1800, 2024))
-
+    # Slider
+    min_year = 1800
+    max_year = 2024
+    year_range = st.slider("Year Established", min_year, max_year, (1800, 2024))
 
     # Category Filter
-categories = ["All", "Dance Hall", "School", "Church", "Cemetery", "Verein", "Saloon", "Store"]
-selected_category = st.sidebar.selectbox("Select Category", categories)
+    categories = ["All", "Dance Hall", "School", "Church", "Cemetery", "Verein", "Saloon", "Store"]
+    selected_category = st.selectbox("Select Category", categories)
     
     # Search Filter
-search_query = st.sidebar.text_input("Search by Name", placeholder="e.g., Schmidt, Krause...")
-    
+    search_query = st.text_input("Search by Name", placeholder="e.g., Schmidt...")
 
-# 4. THE BIG SPINNER WRAPPER
+# --- 7. MAIN APP LOGIC ---
 with st.spinner('Filtering data and redrawing map...'):
     
-    # A. FILTER THE DATA
+    # A. FILTER DATA
     filtered_df = df.copy()
 
-    # Filter by Year (Keep sites in range OR sites with unknown years)
+    # Year Filter
     filtered_df = filtered_df[
         (filtered_df['Year'].between(year_range[0], year_range[1])) | 
         (filtered_df['Year'].isna())
     ]
 
-    # Filter by Category
+    # Category Filter
     if selected_category != "All":
         filtered_df = filtered_df[
             filtered_df['Title'].str.contains(selected_category, case=False, na=False) | 
             filtered_df['MarkerText'].str.contains(selected_category, case=False, na=False)
         ]
 
-    # Filter by Search
+    # Search Filter
     if search_query:
         filtered_df = filtered_df[filtered_df['Title'].str.contains(search_query, case=False, na=False)]
 
-    # B. UPDATE COUNTER (Now accurate!)
-    # --- PASTE THIS REPLACEMENT BLOCK ---
-    
-    # Create two columns side-by-side in the sidebar
+    # B. DISPLAY METRICS
     col1, col2 = st.sidebar.columns(2)
-    
-    # Metric 1: Total Count
     col1.metric("Total Sites", len(filtered_df))
     
-    # Metric 2: Top County (The Data Science Part)
-    # We check if data exists, then find the 'mode' (most common value)
     if not filtered_df.empty and 'County' in filtered_df.columns:
         try:
             top_county = filtered_df['County'].dropna().mode().iloc[0]
@@ -172,25 +152,19 @@ with st.spinner('Filtering data and redrawing map...'):
             col2.metric("Top County", "N/A")
     else:
         col2.metric("Top County", "N/A")
-        
-    # ------------------------------------
 
     # C. DRAW MAP
     m = folium.Map(location=[30.27, -98.87], zoom_start=7, tiles="CartoDB positron")
-    
-    # Faster clustering options
     marker_cluster = MarkerCluster(options={'spiderfyOnMaxZoom': False}).add_to(m)
 
     for idx, row in filtered_df.head(2000).iterrows():
-        try: 
-        # --- EVERYTHING BELOW MUST BE INDENTED ---
-        
-        # 1. GET DESCRIPTION
+        try:
+            # Get Description
             desc = str(row.get('MarkerText', ''))
             if desc == "nan" or desc == "None" or desc == "":
-                desc = "No additional details available."
+                desc = "No details available."
 
-        # 2. CREATE HTML POPUP
+            # Popup HTML
             popup_html = f"""
             <div style="width: 300px; font-family: sans-serif;">
                 <b>{row['Title']}</b><br>
@@ -202,7 +176,7 @@ with st.spinner('Filtering data and redrawing map...'):
             </div>
             """
 
-        # 3. COLOR LOGIC
+            # Color Logic
             color = 'blue'
             full_text = str(row['Title']) + " " + desc
             if 'Dance' in full_text: color = 'red'
@@ -210,13 +184,15 @@ with st.spinner('Filtering data and redrawing map...'):
             elif 'School' in full_text: color = 'green'
             elif 'Cemetery' in full_text: color = 'gray'
 
-    # 4. DRAW THE MARKER
+            # Add Marker
             folium.Marker(
                 location=[row['latitude'], row['longitude']],
                 popup=folium.Popup(popup_html, max_width=350),
                 icon=folium.Icon(color=color, icon="info-sign")
-                ).add_to(marker_cluster)
-         except Exception:
-             continue
-    # Display Map
-        st_folium(m, width=None, height=600, returned_objects=[])
+            ).add_to(marker_cluster)
+
+        except Exception:
+            continue
+
+# --- 8. DISPLAY MAP (OUTSIDE THE LOOP) ---
+st_folium(m, width=1200, height=600)
