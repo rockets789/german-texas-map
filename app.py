@@ -66,7 +66,7 @@ st.markdown("""
 
 # 3. TITLE SECTION
 
-st.title("🇩🇪 The German Belt Navigator v2")
+st.title("🇩🇪 The German Belt Navigator")
 
 st.markdown("""
 
