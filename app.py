@@ -91,8 +91,8 @@ with st.sidebar:
     if st.button("🔄 Force Reload"):
         st.rerun()
 
-    st.markdown("---")
-    st.subheader("🕵️ Data Detective")
+ #   st.markdown("---")
+ #   st.subheader("🕵️ Data Detective")
 
     # Duplicate Hunter
     # NEW (Smart)
